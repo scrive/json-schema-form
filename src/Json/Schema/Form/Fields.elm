@@ -168,7 +168,7 @@ txt options path schema f { isNumber } =
 
         classes : List ( String, Bool )
         classes =
-            [ ( "form-control", True )
+            [ ( "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6", True )
             , ( "is-invalid", f.liveError /= Nothing )
             , case schema.format of
                 Just str ->
@@ -275,15 +275,15 @@ checkbox options path schema f =
     let
         content : List (Html F.Msg)
         content =
-            [ div [ class "checkbox" ]
+            [ div [ class "checkbox flex h-6 items-center" ]
                 [ Input.checkboxInput f
                     [ classList
-                        [ ( "form-check-input", True )
+                        [ ( "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600", True )
                         , ( "is-invalid", f.liveError /= Nothing )
                         ]
                     , id f.path
                     ]
-                , fieldTitle schema path |> Maybe.withDefault (text "")
+                , div [class "ml-3 text-sm leading-6"] [fieldTitle schema path |> Maybe.withDefault (text "")]
                 ]
             ]
 
@@ -358,7 +358,7 @@ select options path schema f =
             items
             f
             [ classList
-                [ ( "form-control custom-select", True )
+                [ ( "block w-full mt-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6", True )
                 , ( "is-invalid", f.liveError /= Nothing )
                 ]
             , id f.path
@@ -398,18 +398,18 @@ list options path form ( title, schema ) =
         itemView : Int -> Html F.Msg
         itemView idx =
             li
-                [ class "list-group-item" ]
+                [ class "list-group-item border border-gray-300 rounded-md px-4 py-2 mb-2 shadow-sm" ]
                 [ schemaView options (itemPath idx) schema form
                 , button
                     [ onClickPreventDefault (F.RemoveItem (fieldPath path) idx)
-                    , class "btn btn-outline-secondary btn-sm btn-remove"
+                    , class "rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                     ]
                     [ text "Remove" ]
                 ]
     in
     [ ol [ class "list-group mb-2" ] (List.map itemView indexes)
     , button
-        [ class "btn btn-secondary btn-add"
+        [ class "rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
         , onClickPreventDefault (F.Append (fieldPath path))
         ]
         [ text (title |> Maybe.withDefault "Add")
@@ -432,7 +432,7 @@ tuple options path form ( title, schemata ) =
         itemView : Int -> Schema -> Html F.Msg
         itemView idx itemSchema =
             div
-                [ class "col" ]
+                [ class "max-w-full flex-grow" ]
                 [ schemaView options (itemPath idx) itemSchema form ]
     in
     [ case title of
@@ -441,19 +441,21 @@ tuple options path form ( title, schemata ) =
 
         Nothing ->
             text ""
-    , div [ class "form-row" ] (List.indexedMap itemView schemata)
+    , div [ class "flex space-x-4" ] (List.indexedMap itemView schemata)
     ]
 
 
 radio : F.FieldState ErrorValue String -> ( String, String ) -> Html F.Msg
 radio fieldState ( value, title ) =
-    label [ class "form-check-label" ]
-        [ Input.radioInput value
+  div [class "flex items-center gap-x-3"][
+         Input.radioInput value
             fieldState
-            [ class "form-check-input"
+            [ class "form-check-input h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
             , id (fieldPath [ fieldState.path, value ])
             ]
-        , span [ class "label-text" ] [ text title ]
+        ,label [ class "form-check-label block text-sm font-medium leading-6 text-gray-900" ]
+        [ text title ]
+        
         ]
 
 
@@ -527,12 +529,12 @@ field options schema f content =
     in
     div
         [ classList
-            [ ( "form-group", True )
+            [ ( "form-group mb-6", True )
             , ( "is-invalid", f.liveError /= Nothing )
             , ( "has-value", f.value /= Nothing && f.value /= Just "" )
             ]
         ]
-        [ label [ for f.path, class "d-block" ]
+        [ label [ for f.path, class "block" ]
             [ div [ class "field-input" ] (content ++ feedback)
             , case meta of
                 [] ->
@@ -574,7 +576,7 @@ group options path schema form =
     in
     div
         [ classList
-            [ ( "form-group", True )
+            [ ( "form-group mb-4", True )
             , ( "is-invalid", f.liveError /= Nothing )
             , ( "has-value", f.value /= Nothing && f.value /= Just "" )
             ]
@@ -587,13 +589,13 @@ fieldTitle schema path =
     schema.title
         -- If it does not have a title, derive from property name, unCamelCasing it
         |> Maybe.orElse (List.last path |> Maybe.map (String.Case.convertCase " " True True))
-        |> Maybe.map (\str -> span [ class "label-text" ] [ text str ])
+        |> Maybe.map (\str -> span [ class "block text-sm font-medium leading-6 text-gray-900" ] [ text str ])
 
 
 fieldDescription : SubSchema -> Maybe (Html F.Msg)
 fieldDescription schema =
     schema.description
-        |> Maybe.map (\str -> div [ class "form-text text-muted" ] [ text str ])
+        |> Maybe.map (\str -> div [ class "mt-2 text-sm leading-6 text-gray-600" ] [ text str ])
 
 
 liveError : Errors -> F.FieldState ErrorValue a -> Maybe (Html F.Msg)
@@ -602,7 +604,7 @@ liveError func f =
         |> Maybe.map
             (\err ->
                 div
-                    [ class "invalid-feedback"
+                    [ class "invalid-feedback text-red-500 text-xs my-2"
                     , style "display" "block"
                     ]
                     [ text (func f.path err) ]
@@ -617,9 +619,9 @@ inputGroup prefix suffix content =
             case prefix of
                 Just string ->
                     [ div
-                        [ class "input-group-prepend" ]
-                        [ div
-                            [ class "input-group-text" ]
+                        [ class "inline-flex items-center rounded-l-md border border-r-0 border-gray-300 px-3 text-gray-500 sm:text-sm" ]
+                        [ span
+                            [ class "text-gray-500 sm:text-sm" ]
                             [ text string ]
                         ]
                     ]
@@ -632,9 +634,9 @@ inputGroup prefix suffix content =
             case suffix of
                 Just string ->
                     [ div
-                        [ class "input-group-append" ]
-                        [ div
-                            [ class "input-group-text" ]
+                        [ class "inline-flex items-center rounded-r-md border border-l-0 border-gray-300 px-3 text-gray-500 sm:text-sm" ]
+                        [ span
+                            [ class "text-gray-500 sm:text-sm" ]
                             [ text string ]
                         ]
                     ]
@@ -643,7 +645,7 @@ inputGroup prefix suffix content =
                     []
     in
     div
-        [ class "input-group" ]
+        [ class "input-group mt-2 flex shadow-sm" ]
         (prepend ++ content ++ append)
 
 
@@ -654,7 +656,7 @@ fieldset schema content =
         title =
             case schema.title of
                 Just str ->
-                    [ legend [] [ text str ] ]
+                    [ legend [class "text-2xl pb-2"] [ text str ] ]
 
                 Nothing ->
                     []
