@@ -447,13 +447,21 @@ tuple options path form ( title, schemata ) =
 
 radio : F.FieldState ErrorValue String -> ( String, String ) -> Html F.Msg
 radio fieldState ( value, title ) =
+    let
+        fieldId : String
+        fieldId =
+            fieldPath [ fieldState.path, value ]
+    in
     div [ class "flex items-center gap-x-3" ]
         [ Input.radioInput value
             fieldState
             [ class "form-check-input h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-            , id (fieldPath [ fieldState.path, value ])
+            , id fieldId
             ]
-        , label [ class "form-check-label block text-sm font-medium leading-6 text-gray-900" ]
+        , label
+            [ class "form-check-label block text-sm font-medium leading-6 text-gray-900"
+            , for fieldId
+            ]
             [ text title ]
         ]
 
