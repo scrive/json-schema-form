@@ -283,7 +283,7 @@ checkbox options path schema f =
                         ]
                     , id f.path
                     ]
-                , div [class "ml-3 text-sm leading-6"] [fieldTitle schema path |> Maybe.withDefault (text "")]
+                , div [ class "ml-3 text-sm leading-6" ] [ fieldTitle schema path |> Maybe.withDefault (text "") ]
                 ]
             ]
 
@@ -447,15 +447,14 @@ tuple options path form ( title, schemata ) =
 
 radio : F.FieldState ErrorValue String -> ( String, String ) -> Html F.Msg
 radio fieldState ( value, title ) =
-  div [class "flex items-center gap-x-3"][
-         Input.radioInput value
+    div [ class "flex items-center gap-x-3" ]
+        [ Input.radioInput value
             fieldState
             [ class "form-check-input h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
             , id (fieldPath [ fieldState.path, value ])
             ]
-        ,label [ class "form-check-label block text-sm font-medium leading-6 text-gray-900" ]
-        [ text title ]
-        
+        , label [ class "form-check-label block text-sm font-medium leading-6 text-gray-900" ]
+            [ text title ]
         ]
 
 
@@ -656,7 +655,7 @@ fieldset schema content =
         title =
             case schema.title of
                 Just str ->
-                    [ legend [class "text-2xl pb-2"] [ text str ] ]
+                    [ legend [ class "text-2xl pb-2" ] [ text str ] ]
 
                 Nothing ->
                     []
