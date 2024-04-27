@@ -11,7 +11,6 @@ import Html exposing (..)
 import Html.Attributes as Attrs exposing (class, style)
 import Html.Events exposing (onClick, onSubmit)
 import Json.Encode exposing (bool, float, int, list, string)
-import Json.Schema
 import Json.Schema.Builder exposing (..)
 import Json.Schema.Definitions
 import Json.Schema.Form exposing (Msg, State)
@@ -309,7 +308,7 @@ schema =
             , ( "numbers"
               , buildSchema
                     |> withType "array"
-                    |> withDefault (list float [ 6, 6.8 ])
+                    |> withDefault (list float [ 6, 7 ])
                     |> withItems
                         [ buildSchema
                             |> withType "integer"
