@@ -23,8 +23,10 @@ import Json.Schema.Builder
         , withType
         , withUnionType
         )
-import Json.Schema.Form.Fields exposing (Options, schemaView)
+import Json.Schema.Form.Fields exposing (schemaView)
+import Json.Schema.Form.Options exposing (Options)
 import Json.Schema.Form.Value exposing (Value(..))
+import Json.Schema.Form.Theme as Theme
 import Test exposing (Test, describe, test)
 import Test.Html.Event as Event
 import Test.Html.Query as Query
@@ -35,6 +37,7 @@ options : Options
 options =
     { errors = \_ _ -> ""
     , formats = Dict.empty
+    , theme = Theme.default
     }
 
 

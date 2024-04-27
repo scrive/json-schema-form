@@ -10,7 +10,7 @@ module Json.Schema.Form exposing
 
 # Types
 
-@docs Options, State, Msg
+@docs State, Msg
 
 
 # Init/update lifecycle

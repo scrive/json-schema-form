@@ -1,19 +1,16 @@
 module Json.Schema.Form.Theme exposing (default, Theme)
 
-import Form as F
-import Json.Schema.Form.Error exposing (ErrorValue, Errors)
-import Json.Schema.Definitions exposing
-        ( Items(..)
-        , Schema(..)
-        , SingleType(..)
-        , SubSchema
-        , Type(..)
-        , blankSchema
-        )
+{-| Theme allows you to set styling of generated Form elements
+
+@docs Theme, default
+
+-}
+
 import Html exposing (Attribute)
 import Html.Attributes as Attrs
-import Json.Schema.Form.Error exposing (ErrorValue, Errors)
 
+{-| Record, that holds the styling of elements 
+-}
 type alias Theme = {
   txt : {withError: Bool, format: Maybe String} -> (Attribute Never)
   , checkboxWrapper: Attribute Never
@@ -46,6 +43,8 @@ type alias Theme = {
   , inputGroup: Attribute Never
   }
 
+{-| Default bootstrap theme
+-}
 default : Theme
 default = {
     -- inputs
