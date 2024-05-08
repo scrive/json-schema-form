@@ -25,8 +25,8 @@ import Json.Schema.Builder
         )
 import Json.Schema.Form.Fields exposing (schemaView)
 import Json.Schema.Form.Options exposing (Options)
-import Json.Schema.Form.Value exposing (Value(..))
 import Json.Schema.Form.Theme as Theme
+import Json.Schema.Form.Value exposing (Value(..))
 import Test exposing (Test, describe, test)
 import Test.Html.Event as Event
 import Test.Html.Query as Query
@@ -315,7 +315,7 @@ hasFieldTitle schema =
         |> withTitle "Test"
         |> view
             (Query.find [ tag "label" ]
-                >> Query.find [ tag "span", class "block" ]
+                >> Query.find [ tag "span", class "label-text" ]
                 >> Query.has [ text "Test" ]
             )
 
@@ -326,7 +326,7 @@ hasFieldDescription schema =
         |> withDescription "Lorem ipsum."
         |> view
             (Query.find [ class "field-meta" ]
-                >> (Query.find [ classes [ "mt-2", "text-sm", "leading-6", "text-gray-600" ] ]
+                >> (Query.find [ class "form-text" ]
                         >> Query.has [ text "Lorem ipsum." ]
                    )
             )
@@ -342,12 +342,12 @@ isCheckbox schema =
             , hasFieldDescription
             , view
                 (Expect.all
-                    [ Query.has [ tag "div", class "checkbox" ]
-                    , Query.find [ tag "span" ]
-                        >> Query.has [ class "font-medium", text "Test" ]
+                    [ Query.has [ tag "div", class "form-check" ]
+                    , Query.find [ tag "label" ]
+                        >> Query.has [ class "label-text", text "Test" ]
                     , Query.find [ tag "input" ]
                         >> Query.has
-                            [ class "rounded"
+                            [ class "form-check-input"
                             , attribute
                                 (Html.Attributes.attribute
                                     "type"
@@ -430,13 +430,13 @@ isList schema =
                 [ Query.has [ tag "div", class "form-group" ]
                 , Query.find
                     [ tag "button"
-                    , classes [ "rounded-md", "bg-gray-600", "px-3" ]
+                    , classes [ "btn", "btn-secondary", "btn-add" ]
                     ]
                     >> Query.has [ text "Test" ]
-                , Query.find [ tag "button", classes [ "rounded-md", "bg-gray-600", "px-3" ] ]
+                , Query.find [ tag "button", class "btn-add" ]
                     >> Event.simulate Event.click
                     >> Event.expect (F.Append "")
-                , Query.find [ classes [ "mt-2", "text-sm", "leading-6", "text-gray-600" ] ]
+                , Query.find [ class "form-text" ]
                     >> Query.has [ text "Lorem ipsum." ]
                 , Query.findAll [ class "list-group" ]
                     >> Query.count (Expect.equal 1)
@@ -488,10 +488,10 @@ isSwitch schema =
                                         ]
                                 ]
                             )
-                    , Query.findAll [ class "form-check-label" ]
+                    , Query.findAll [ class "label-text" ]
                         >> Query.index 0
                         >> Query.has [ text "One" ]
-                    , Query.findAll [ class "form-check-label" ]
+                    , Query.findAll [ class "label-text" ]
                         >> Query.index 1
                         >> Query.has [ text "Two" ]
                     , Query.findAll [ class "form-check-input" ]
@@ -534,7 +534,7 @@ isSelect schema =
                 (Expect.all
                     [ Query.find
                         [ tag "select"
-                        , classes [ "block", "w-full", "mt-2", "rounded-md", "border-0" ]
+                        , classes [ "form-control", "custom-select" ]
                         ]
                         >> Query.children [ tag "option" ]
                         >> Query.count (Expect.equal 2)
@@ -576,7 +576,7 @@ isNumberSelect schema =
                 (Expect.all
                     [ Query.find
                         [ tag "select"
-                        , classes [ "block", "w-full", "mt-2", "rounded-md", "border-0" ]
+                        , classes [ "form-control", "custom-select" ]
                         ]
                         >> Query.children [ tag "option" ]
                         >> Query.count (Expect.equal 2)
